@@ -67,14 +67,14 @@ def prepare_tf_record_data(feature_id_map, path, out_path):
             features = arr[0]
             label = [int(arr[1])]
             feature_list = [0]*len(feature_id_map)
-            for f in features.split(','):
-                index = feature_id_map[f]
+            for fe in features.split(','):
+                index = feature_id_map[fe]
                 feature_list[index] = 1
-                
-            features["input_feature_ids"] = tf.train.Feature(int64_list=tf.train.Int64List(value=feature_list))
-            features["labels"] = tf.train.Feature(int64_list=tf.train.Int64List(value=label))
+            fea_dict = {}    
+            fea_dict["input_feature_ids"] = tf.train.Feature(int64_list=tf.train.Int64List(value=feature_list))
+            fea_dict["labels"] = tf.train.Feature(int64_list=tf.train.Int64List(value=label))
 
-            tf_example = tf.train.Example(features=tf.train.Features(feature=features))
+            tf_example = tf.train.Example(features=tf.train.Features(feature=fea_dict))
             writer.write(tf_example.SerializeToString())
             example_count += 1
 

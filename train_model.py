@@ -2,6 +2,7 @@
 
         
 import tensorflow as tf
+import os
 from data_generate import get_feature_id_map
 from model import Fm
 
@@ -28,13 +29,13 @@ def get_input_data(input_file, batch_size, feature_id_map):
     return input_feature_ids, labels
  
         
-def auc():
-    pass
+def auc(prob,y_dev):
+    return 1
         
         
 def train(feature_id_map):
     lr = 0.001
-    feature_id_size = 65
+    feature_id_size = len(feature_id_map)
     fm_embedding_size = 4
     input_feature_ids = tf.placeholder(tf.float32, shape=[None, feature_id_size], name='input_feature_ids')
     #1和-1
@@ -57,7 +58,7 @@ def train(feature_id_map):
             #格式化输出 居中对齐
             print("{:*^100s}".format(("epoch-" + str(epoch)).center(20)))
             # 读取训练数据
-            for i in range(20000/32):
+            for i in range(int(20000/32)):
                 step += 1
                 id_train, y_train = sess.run([input_feature_ids_train, labels_train])
                 feed = {fm.input_feature_ids: id_train, fm.labels: y_train}
@@ -66,7 +67,7 @@ def train(feature_id_map):
                 if step % 50 == 0:
                     total_auc = 0
                     total_loss = 0
-                    num_dev_steps = 2000/64
+                    num_dev_steps = int(2000/64)
                     for j in range(num_dev_steps):
                         id_dev, y_dev = sess.run([input_feature_ids_dev, labels_dev])
                         feed = {fm.input_feature_ids: id_dev, fm.labels: y_dev}
