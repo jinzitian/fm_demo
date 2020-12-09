@@ -8,6 +8,7 @@ import os
 import tensorflow as tf
 
 from data_generate import get_feature_id_map
+from data_generate import generate_one_data
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
@@ -62,9 +63,11 @@ def predict(features_list, feature_id_map):
 
 
 if __name__ == "__main__":
-    feature_list = ['性别#男,年龄#0-18,城市#5,车型#奥迪,时间#2,星期#6,油量#0-30%,目的地类型#高铁,目的地附近有无洗车店#1,目的地附近有无停车场#0,天气状况#大雨,车速#21-40,场景#3',
-                    '性别#男,年龄#31-35,城市#1,车型#迈腾,时间#10,星期#1,油量#0-30%,目的地类型#高铁,目的地附近有无洗车店#0,目的地附近有无停车场#0,天气状况#多云,车速#60-100,场景#0']
-    scene_list = ['场景#3','场景#1']
+    all_feature = generate_one_data()
+    user_feature = ','.join(all_feature.split(',')[:-1])
+    #user_feature = '性别#男,年龄#0-18,城市#5,车型#奥迪,时间#2,星期#6,油量#0-30%,目的地类型#家,目的地附近有无洗车店#1,目的地附近有无停车场#0,天气状况#大雨,车速#21-40'
+    scene_list = ['场景#0','场景#1','场景#2','场景#3','场景#4','场景#5','场景#6','场景#7','场景#8','场景#9','场景#10','场景#11']
+    feature_list = [ user_feature + ',' + scene_list[i] for i in range(len(scene_list)) ]
     feature_id_map = get_feature_id_map('./data/feature_id_map.txt')
     probs = predict(feature_list, feature_id_map)
     sorted(zip(scene_list, probs),key = lambda x:-x[1])

@@ -3,8 +3,10 @@
         
 import tensorflow as tf
 import os
+import matplotlib.pyplot as plt
 from data_generate import get_feature_id_map
 from model import Fm
+
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
@@ -30,7 +32,20 @@ def get_input_data(input_file, batch_size, feature_id_map):
  
         
 def auc(prob,y_dev):
-    return 1
+    assert len(prob) == len(y_dev)
+    sort_list = sorted(zip(prob,y_dev))
+    sum_r = 0
+    m = 0
+    n = 0
+    for i in range(len(sort_list)):
+        if sort_list[i][1] == 1:
+            m += 1
+            sum_r += i+1
+    n = len(sort_list) - m
+    if m == 0 or n == 0:
+        return -1
+    auc = (sum_r - (1+m)*m*0.5)/(m*n)
+    return auc
         
         
 def train(feature_id_map):
@@ -54,6 +69,8 @@ def train(feature_id_map):
         input_feature_ids_train, labels_train = get_input_data("./data/train.tf_record", 32, feature_id_map)
         input_feature_ids_dev, labels_dev = get_input_data("./data/dev.tf_record", 64, feature_id_map)
         step = 0
+        step_list = []
+        auc_list = []
         for epoch in range(10):
             #格式化输出 居中对齐
             print("{:*^100s}".format(("epoch-" + str(epoch)).center(20)))
@@ -67,18 +84,28 @@ def train(feature_id_map):
                 if step % 50 == 0:
                     total_auc = 0
                     total_loss = 0
+                    total_n = 0
                     num_dev_steps = int(2000/64)
                     for j in range(num_dev_steps):
                         id_dev, y_dev = sess.run([input_feature_ids_dev, labels_dev])
                         feed = {fm.input_feature_ids: id_dev, fm.labels: y_dev}
                         _, loss, prob = sess.run([fm.train_op, fm.loss, fm.prob],feed_dict = feed)
-                        total_auc += auc(prob,y_dev)
-                        total_loss += loss
+                        o_auc = auc(prob,y_dev)
+                        if o_auc >=0 :
+                            total_auc += o_auc
+                            total_loss += loss
+                            total_n += 1
                     
-                    avg_auc = total_auc/num_dev_steps
-                    avg_loss = total_loss/num_dev_steps
+                    avg_auc = total_auc/total_n
+                    avg_loss = total_loss/total_n
+                    
+                    step_list.append(step)
+                    auc_list.append(avg_auc)
+                    
                     print("epoch:{:<2}, step:{:<6}, loss:{:<10.6}, auc:{:<10.3}".format(epoch, step, avg_loss, avg_auc))
                     saver.save(sess, './model/fm.ckpt', global_step=step)
+        plt.figure(dpi=150)
+        plt.plot(step_list, auc_list, 'r')
     
     
 if __name__ == "__main__":   

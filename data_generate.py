@@ -42,13 +42,13 @@ def generate_data(train_path, dev_path):
     dev = open(dev_path, 'w', encoding='utf-8')
     for i in range(20000):
         data = generate_one_data()
-        label = '-1' if np.random.rand() < 0.5 else '1'
+        label = '-1' if np.random.rand() < 0.8 else '1'
         train.write(data + '\t' + label + '\n')
     train.close()
     
     for i in range(2000):
         data = generate_one_data()
-        label = '-1' if np.random.rand() < 0.5 else '1'
+        label = '-1' if np.random.rand() < 0.8 else '1'
         dev.write(data + '\t' + label + '\n')
     dev.close()
     
