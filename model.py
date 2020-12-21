@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+@author: Jin Zitian
+@time: 2020-12-11 16:55
+"""
 import tensorflow as tf
 
 class Fm(object):
