@@ -5,7 +5,7 @@ import tensorflow as tf
 import os
 import matplotlib.pyplot as plt
 from data_generate import get_feature_id_map
-from model import Fm
+from fm_model import Fm
 
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
