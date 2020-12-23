@@ -4,7 +4,7 @@
 import tensorflow as tf
 import os
 import matplotlib.pyplot as plt
-from data_generate_scene import get_feature_id_map
+from data_generate_service import get_feature_id_map
 from fm_model import Fm
 
 
@@ -66,8 +66,8 @@ def train(feature_id_map):
     with tf.Session(config=tf_config) as sess:
         sess.run(init_global)
         
-        input_feature_ids_train, labels_train = get_input_data("./data/train_scene.tf_record", 32, feature_id_map)
-        input_feature_ids_dev, labels_dev = get_input_data("./data/dev_scene.tf_record", 64, feature_id_map)
+        input_feature_ids_train, labels_train = get_input_data("./data/train_service.tf_record", 32, feature_id_map)
+        input_feature_ids_dev, labels_dev = get_input_data("./data/dev_service.tf_record", 64, feature_id_map)
         step = 0
         step_list = []
         auc_list = []
@@ -103,11 +103,11 @@ def train(feature_id_map):
                     auc_list.append(avg_auc)
                     
                     print("epoch:{:<2}, step:{:<6}, loss:{:<10.6}, auc:{:<10.3}".format(epoch, step, avg_loss, avg_auc))
-                    saver.save(sess, './model_scene/fm.ckpt', global_step=step)
+                    saver.save(sess, './model_service/fm.ckpt', global_step=step)
         plt.figure(dpi=150)
         plt.plot(step_list, auc_list, 'r')
     
     
 if __name__ == "__main__":   
-    feature_id_map = get_feature_id_map('./data/feature_id_map_scene.txt')
+    feature_id_map = get_feature_id_map('./data/feature_id_map_service.txt')
     train(feature_id_map)

@@ -7,8 +7,8 @@
 import os
 import tensorflow as tf
 
-from data_generate_scene import get_feature_id_map
-from data_generate_scene import generate_one_data
+from data_generate_service import get_feature_id_map
+from data_generate_service import generate_one_data
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
@@ -40,7 +40,7 @@ def load_model(model_folder):
     return sess_
 
 
-model_path = "./model_scene/"
+model_path = "./model_service/"
 sess = load_model(model_path)
 input_feature_ids = sess.graph.get_tensor_by_name("input_feature_ids:0")
 prob = sess.graph.get_tensor_by_name("Sigmoid_1:0")
@@ -66,9 +66,9 @@ if __name__ == "__main__":
     all_feature = generate_one_data()
     user_feature = ','.join(all_feature.split(',')[:-1])
     #user_feature = '性别#男,年龄#0-18,城市#5,车型#奥迪,时间#2,星期#6,油量#0-30%,目的地类型#家,目的地附近有无洗车店#1,目的地附近有无停车场#0,天气状况#大雨,车速#21-40'
-    scene_list = ['场景#0','场景#1','场景#2','场景#3','场景#4','场景#5','场景#6','场景#7','场景#8','场景#9','场景#10','场景#11']
+    scene_list = ['服务#0','服务#1','服务#2','服务#3']
     feature_list = [ user_feature + ',' + scene_list[i] for i in range(len(scene_list)) ]
-    feature_id_map = get_feature_id_map('./data/feature_id_map_scene.txt')
+    feature_id_map = get_feature_id_map('./data/feature_id_map_service.txt')
     probs = predict(feature_list, feature_id_map)
     sorted(zip(scene_list, probs),key = lambda x:-x[1])
     

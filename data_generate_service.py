@@ -14,7 +14,8 @@ feature_dict = {'性别':['男','女'],
                     '目的地附近有无停车场':[0,1],
                     '天气状况':['晴天','多云','小雨','大雨'],
                     '车速':['0-20','21-40','40-60','60-100','100+'],
-                    '场景':[0,1,2,3,4,5,6,7,8,9,10,11]
+                    '场景':[0,1,2,3,4,5,6,7,8,9,10,11],
+                    '服务':[0,1,2,3]
                     }
 labels = [-1, 1]
 
@@ -99,9 +100,9 @@ def get_feature_id_map(path):
 
 
 if __name__ == "__main__":    
-    train_file = './data/train_data_scene.txt'
-    dev_file = './data/dev_data_scene.txt'
+    train_file = './data/train_data_service.txt'
+    dev_file = './data/dev_data_service.txt'
     generate_data(train_file, dev_file)
-    feature_id_map = get_feature_id_map('./data/feature_id_map_scene.txt')
-    prepare_tf_record_data(feature_id_map, path=train_file, out_path="./data/train_scene.tf_record")
-    prepare_tf_record_data(feature_id_map, path=dev_file, out_path="./data/dev_scene.tf_record")
+    feature_id_map = get_feature_id_map('./data/feature_id_map_service.txt')
+    prepare_tf_record_data(feature_id_map, path=train_file, out_path="./data/train_service.tf_record")
+    prepare_tf_record_data(feature_id_map, path=dev_file, out_path="./data/dev_service.tf_record")
